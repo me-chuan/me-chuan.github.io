@@ -1,0 +1,74 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { SITE } from '../data/site.config';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+const featured = projects.filter((p) => p.data.featured);
+const latestPosts = posts.slice(0, 3);
+const latestProjects = (featured.length > 0 ? featured : projects).slice(0, 4);
+---
+
+<BaseLayout>
+  <section class="hero">
+    <div class="hero__inner">
+      <img class="hero__avatar" src={SITE.avatar} alt={`${SITE.author} 的头像`} width="88" height="88" />
+      <div class="hero__body">
+        <h1 class="hero__name">{SITE.author}</h1>
+        <p class="hero__tagline">{SITE.tagline}</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="/blog/">看文章</a>
+          <a class="btn" href="/projects/">看项目</a>
+          {
+            SITE.links.github && (
+              <a class="btn" href={SITE.links.github} target="_blank" rel="me noopener noreferrer">
+                GitHub
+              </a>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {
+    latestPosts.length > 0 && (
+      <section class="section">
+        <div class="section-head">
+          <h2>最新文章</h2>
+          <a href="/blog/">全部文章 →</a>
+        </div>
+        <ul class="post-list">
+          {latestPosts.map((post) => (
+            <PostCard post={post} />
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    latestProjects.length > 0 && (
+      <section class="section">
+        <div class="section-head">
+          <h2>项目</h2>
+          <a href="/projects/">全部项目 →</a>
+        </div>
+        <div class="card-grid">
+          {latestProjects.map((project) => (
+            <ProjectCard project={project} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>

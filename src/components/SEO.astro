@@ -1,0 +1,84 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  type?: 'website' | 'article';
+  canonical?: string;
+  publishedTime?: Date;
+  tags?: string[];
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  type = 'website',
+  canonical,
+  publishedTime,
+  tags = [],
+  ogImage = '/og-image.png',
+  noindex = false,
+} = Astro.props;
+
+const site = Astro.site ?? new URL('https://me-chuan.github.io');
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, site).href;
+const ogImageUrl = new URL(ogImage, site).href;
+const { SITE } = await import('../data/site.config');
+---
+
+<meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+<link rel="canonical" href={canonicalUrl} />
+
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={SITE.title} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:locale" content={SITE.lang} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageUrl} />
+
+{publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+{tags.map((tag) => <meta property="article:tag" content={tag} />)}
+
+<link rel="alternate" type="application/rss+xml" title={`${SITE.title} · RSS`} href="/rss.xml" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+{
+  type === 'website' ? (
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: SITE.author,
+        url: SITE.url,
+        image: new URL(SITE.avatar, site).href,
+        sameAs: [SITE.links.github].filter(Boolean),
+      })}
+    />
+  ) : (
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: title,
+        description,
+        datePublished: publishedTime?.toISOString(),
+        author: { '@type': 'Person', name: SITE.author, url: SITE.url },
+        publisher: { '@type': 'Person', name: SITE.author, url: SITE.url },
+        mainEntityOfPage: canonicalUrl,
+        image: ogImageUrl,
+        keywords: tags.join(', '),
+      })}
+    />
+  )
+}

@@ -1,0 +1,36 @@
+---
+import { SITE } from '../data/site.config';
+
+const year = new Date().getFullYear();
+const linkEntries = Object.entries(SITE.links).filter(([, value]) => Boolean(value));
+const labelMap: Record<string, string> = {
+  github: 'GitHub',
+  email: 'Email',
+  linkedin: 'LinkedIn',
+  x: 'X',
+};
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <p style="margin:0">
+      © {year}
+      {SITE.title}. All rights reserved.
+    </p>
+    <div class="site-footer__links">
+      {
+        linkEntries.map(([key, value]) =>
+          key === 'email' ? (
+            <a href={`mailto:${value}`}>{labelMap[key] ?? key}</a>
+          ) : (
+            <a href={value} target="_blank" rel="me noopener noreferrer">
+              {labelMap[key] ?? key}
+            </a>
+          )
+        )
+      }
+      <a href="/rss.xml">RSS</a>
+      <a href="/sitemap-index.xml">Sitemap</a>
+    </div>
+  </div>
+</footer>

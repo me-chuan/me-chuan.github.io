@@ -1,0 +1,47 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { title, description, tech, repo, demo } = project.data;
+const href = repo ?? demo ?? `/projects/${project.id}/`;
+---
+
+<article class="card">
+  <h3 class="card__title">
+    <a href={href} target={repo || demo ? '_blank' : undefined} rel={repo || demo ? 'noopener noreferrer' : undefined}>
+      {title}
+    </a>
+  </h3>
+  <p class="card__desc">{description}</p>
+  {
+    tech.length > 0 && (
+      <ul class="tag-list">
+        {tech.map((t) => (
+          <li>
+            <span class="tag">{t}</span>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  {
+    (repo || demo) && (
+      <div class="card__links">
+        {repo && (
+          <a href={repo} target="_blank" rel="noopener noreferrer">
+            源码
+          </a>
+        )}
+        {demo && (
+          <a href={demo} target="_blank" rel="noopener noreferrer">
+            演示
+          </a>
+        )}
+      </div>
+    )
+  }
+</article>

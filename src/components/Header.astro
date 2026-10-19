@@ -1,0 +1,73 @@
+---
+import { SITE } from '../data/site.config';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path === href || path.startsWith(href);
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="site-brand" href="/">
+      <span class="site-brand__mark" aria-hidden="true"></span>
+      <span>{SITE.title}</span>
+    </a>
+
+    <nav class="site-nav" aria-label="主导航">
+      {
+        SITE.nav.map((item) => (
+          <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
+      <button class="theme-toggle" type="button" id="theme-toggle" aria-label="切换主题" title="切换主题">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const KEY = 'theme';
+  const btn = document.getElementById('theme-toggle');
+
+  const systemTheme = () =>
+    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+  const stored = () => {
+    const v = localStorage.getItem(KEY);
+    return v === 'light' || v === 'dark' ? v : null;
+  };
+
+  const apply = (theme: string) => {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.dataset.themePref = stored() ?? 'auto';
+  };
+
+  if (btn) {
+    // 三态循环：跟随系统 -> 浅色 -> 深色 -> 跟随系统
+    btn.addEventListener('click', () => {
+      const current = stored() ?? 'auto';
+      const next =
+        current === 'auto'
+          ? systemTheme() === 'dark'
+            ? 'light'
+            : 'dark'
+          : current === 'dark'
+            ? 'auto'
+            : 'dark';
+      if (next === 'auto') localStorage.removeItem(KEY);
+      else localStorage.setItem(KEY, next);
+      apply(next === 'auto' ? systemTheme() : next);
+    });
+  }
+
+  // 跟随系统时，实时响应系统主题变化
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (!stored()) apply(systemTheme());
+  });
+</script>

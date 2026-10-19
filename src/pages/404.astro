@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="404" description="页面不存在" noindex>
+  <div class="error-page">
+    <p class="error-page__code">404</p>
+    <h1 class="page-title">这个页面走丢了</h1>
+    <p class="page-lead" style="margin-inline: auto">
+      链接可能已经失效，或者页面被移动到了别处。
+    </p>
+    <div class="hero__actions" style="justify-content: center">
+      <a class="btn btn--primary" href="/">回到首页</a>
+      <a class="btn" href="/blog/">看看文章</a>
+    </div>
+  </div>
+</BaseLayout>

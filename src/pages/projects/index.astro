@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { SITE } from '../../data/site.config';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order
+);
+---
+
+<BaseLayout title="项目" description={`${SITE.author} 的开源项目与作品集。`}>
+  <h1 class="page-title">项目</h1>
+  <p class="page-lead">做过的项目、工具和一些有趣的尝试。共 {projects.length} 个。</p>
+
+  {
+    projects.length > 0 ? (
+      <div class="card-grid">
+        {projects.map((project) => (
+          <ProjectCard project={project} />
+        ))}
+      </div>
+    ) : (
+      <p>
+        还没有项目。往 <code>src/content/projects/</code> 里放一个 Markdown 文件就会出现在这里。
+      </p>
+    )
+  }
+</BaseLayout>

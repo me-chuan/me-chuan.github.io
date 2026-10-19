@@ -1,0 +1,60 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
+    (a, b) => a.data.order - b.data.order
+  );
+
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const { title, description, tech, repo, demo, startDate } = project.data;
+
+const dateFmt = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: '2-digit' });
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="prose">
+    <header class="post-header">
+      <h1>{title}</h1>
+      <div class="post-header__meta">
+        {startDate && <span>{dateFmt.format(startDate)} 起</span>}
+        {
+          tech.map((t) => (
+            <span class="tag">{t}</span>
+          ))
+        }
+      </div>
+    </header>
+
+    <Content />
+
+    {
+      (repo || demo) && (
+        <div class="hero__actions" style="margin-top: 1.5rem">
+          {repo && (
+            <a class="btn btn--primary" href={repo} target="_blank" rel="noopener noreferrer">
+              查看源码
+            </a>
+          )}
+          {demo && (
+            <a class="btn" href={demo} target="_blank" rel="noopener noreferrer">
+              在线演示
+            </a>
+          )}
+        </div>
+      )
+    }
+  </article>
+
+  <nav class="post-nav" aria-label="项目导航">
+    <a href="/projects/">← 返回项目列表</a>
+  </nav>
+</BaseLayout>

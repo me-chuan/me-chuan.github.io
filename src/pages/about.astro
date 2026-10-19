@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/site.config';
+
+const linkEntries = Object.entries(SITE.links).filter(([, value]) => Boolean(value));
+const labelMap: Record<string, string> = {
+  github: 'GitHub',
+  email: '邮箱',
+  linkedin: 'LinkedIn',
+  x: 'X',
+};
+---
+
+<BaseLayout title="关于" description={`关于 ${SITE.author}。`}>
+  <h1 class="page-title">关于</h1>
+
+  <div class="prose">
+    <p>
+      你好，我是 {SITE.author}。这里是我的长期主页，用来放工程笔记、开源项目和一些自己觉得值得留下来的东西。
+    </p>
+
+    <h2>我在做什么</h2>
+    <p>
+      关注嵌入式与工具链方向，喜欢把重复的手工活写成脚本、做成工具。工作上偏向底层与系统方向，
+      业余时间折腾软硬件结合的小项目。
+    </p>
+
+    <h2>这里有什么</h2>
+    <ul>
+      <li><a href="/blog/">博客</a> —— 工程实践、技术笔记与踩坑记录。</li>
+      <li><a href="/projects/">项目</a> —— 开源仓库与作品集。</li>
+      <li><a href="/rss.xml">RSS</a> —— 订阅更新，不用回来刷。</li>
+    </ul>
+
+    <h2>联系方式</h2>
+    <ul>
+      {
+        linkEntries.map(([key, value]) =>
+          key === 'email' ? (
+            <li>
+              <a href={`mailto:${value}`}>{labelMap[key] ?? key}</a>
+            </li>
+          ) : (
+            <li>
+              <a href={value} target="_blank" rel="me noopener noreferrer">
+                {labelMap[key] ?? key}
+              </a>
+            </li>
+          )
+        )
+      }
+    </ul>
+  </div>
+</BaseLayout>
