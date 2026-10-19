@@ -27,6 +27,7 @@ const ogImageUrl = new URL(ogImage, site).href;
 const { SITE } = await import('../data/site.config');
 ---
 
+<title>{title}</title>
 <meta name="description" content={description} />
 {noindex && <meta name="robots" content="noindex, nofollow" />}
 <link rel="canonical" href={canonicalUrl} />
