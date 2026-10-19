@@ -68,7 +68,19 @@ schema 会在构建期校验，字段写错会让 CI 直接失败——比上线
 3. 新建 `public/CNAME`，写入域名
 4. 仓库 Settings → Pages → Custom domain 填域名，勾选 **Enforce HTTPS**
 
+> `canonical`、`og:image`、`sitemap`、`robots.txt`、`rss.xml` 里的绝对地址全部取自同一个 `site` 配置，改一处即可，不用同步别的地方。
+
 > 不要使用通配符 DNS 记录（`*.example.com`），官方明确警告这存在域名接管风险。
+
+## 部署脚本
+
+登录 `gh` 后可直接运行：
+
+```powershell
+pwsh -File scripts/deploy.ps1
+```
+
+它会依次完成：前置检查 → 类型检查 → 构建 → 建仓 → 推送 → 创建 Pages（Source=GitHub Actions）→ 轮询构建结果。
 
 ## 技术方案文档
 
