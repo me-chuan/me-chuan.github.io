@@ -12,6 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # 只构建一次，后续 job 复用 artifact，避免重复构建
   build:
     name: Build & Type Check
     runs-on: ubuntu-latest
@@ -27,10 +28,10 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
       - run: pnpm build
-      - name: Upload preview artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload site artifact
+        uses: actions/upload-artifact@v7.0.2
         with:
-          name: site-preview
+          name: site-dist
           path: ./dist
           retention-days: 7
 
@@ -38,27 +39,41 @@ jobs:
     name: Dead Link Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7.0.1
-      - name: Check links in built site
-        uses: lycheeverse/lychee-action@v2
+      - name: Download site artifact
+        uses: actions/download-artifact@v8.0.2
         with:
-          args: --no-progress --exclude-path node_modules './dist/**/*.html'
+          name: site-dist
+          path: ./dist
+      - name: Check links in built site
+        uses: lycheeverse/lychee-action@v2.9.0
+        with:
+          args: --no-progress './dist/**/*.html'
           fail: true
 
   lighthouse:
     name: Lighthouse CI
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
     steps:
-      - uses: actions/checkout@v7.0.1
+      - name: Download site artifact
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: site-dist
+          path: ./dist
+      - uses: pnpm/action-setup@v6.1.0
+        with:
+          version: 11
+      # 注意：cache 必须是 pnpm，本项目用 pnpm-lock.yaml；
+      # 写 cache: npm 会因缺少 package-lock.json 直接失败。
       - uses: actions/setup-node@v7.1.0
         with:
           node-version: 24
-          cache: npm
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - run: npm install -g @lhci/cli
-      - name: Build site
-        run: |
-          pnpm install --frozen-lockfile
-          pnpm build
       - name: Collect and assert Lighthouse results
         run: lhci autorun
         env:
