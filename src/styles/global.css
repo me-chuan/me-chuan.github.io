@@ -3,6 +3,9 @@
    主题通过 <html data-theme="light|dark"> 切换，纯 CSS 变量，无运行时开销。
    ============================================================ */
 
+@import '@fontsource/instrument-serif/400.css';
+@import '@fontsource/instrument-serif/400-italic.css';
+
 :root {
   --bg: #ffffff;
   --bg-subtle: #f7f8fa;
@@ -26,6 +29,11 @@
 
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  /* Instrument Serif: 印刷感标题字体。fallback 包含思源宋体/Songti，
+     保证中文标题也落到衬线字族，与正文形成视觉对比。 */
+  --font-display: "Instrument Serif", "Iowan Old Style", "Songti SC",
+    "Source Han Serif SC", "Noto Serif CJK SC", Georgia, "Times New Roman",
+    serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
     "Liberation Mono", monospace;
 }
@@ -90,9 +98,10 @@ h3,
 h4,
 h5,
 h6 {
-  line-height: 1.25;
-  font-weight: 650;
-  letter-spacing: -0.01em;
+  font-family: var(--font-display);
+  line-height: 1.2;
+  font-weight: 400;
+  letter-spacing: -0.015em;
   margin: 0 0 0.6em;
   text-wrap: balance;
 }
@@ -674,6 +683,150 @@ a.card:hover .card__title {
   color: var(--accent);
   margin: 0 0 0.75rem;
   font-family: var(--font-mono);
+}
+
+
+/* ============================================================
+   编辑感增强（Tier 3 美学：阅读感 + 印刷感 + 杂志目录）
+   ============================================================ */
+
+/* 选中文本与设计语言统一色板 */
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* 阅读进度条：固定顶部细线，渐变色；滚动时 JS 更新宽度 */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background: linear-gradient(90deg, var(--accent), #8b5cf6);
+  z-index: 100;
+  pointer-events: none;
+  transition: width 80ms linear;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reading-progress { transition: none; }
+}
+
+/* 文章首字下沉：首段第一个字符放大、衬线、着重点色。
+   浏览器对 ::first-letter 天然支持，零运行时成本。 */
+.prose > p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  font-size: 4.5em;
+  float: left;
+  line-height: 0.85;
+  margin: 0.12em 0.12em 0 0;
+  color: var(--accent);
+  font-weight: 400;
+}
+
+/* 拉引号（Pull Quote）：用于文章中要突出的句子
+   Markdown 写法: <blockquote class="pull-quote">...</blockquote> */
+blockquote.pull-quote {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1.4;
+  font-style: italic;
+  border-left: 3px solid var(--accent);
+  margin: 2rem 0;
+  padding: 0.25rem 0 0.25rem 1.5rem;
+  color: var(--text);
+  background: none;
+}
+blockquote.pull-quote::before {
+  content: '\201C';
+  font-size: 3rem;
+  line-height: 0;
+  vertical-align: -0.4em;
+  margin-right: 0.1em;
+  color: var(--accent);
+}
+
+/* 文章「kicker」：标题上方的小字元数据行，像杂志文章前的 N° XX */
+.post-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.post-kicker__number {
+  color: var(--accent);
+  font-weight: 600;
+  font-feature-settings: 'lnum';
+}
+
+/* 杂志目录式列表：编号 + 标题 + 描述 + meta
+   用于 /blog/ 完整目录，以及首页「最新文章」摘要 */
+.post-list-numbered {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid var(--border);
+}
+.post-list-numbered > li {
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  gap: 1.5rem;
+  padding: 1.75rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: baseline;
+}
+.post-list-number {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  color: var(--text-faint);
+  font-feature-settings: 'lnum';
+  text-align: right;
+  line-height: 1;
+}
+.post-list-numbered li:hover .post-list-number { color: var(--accent); }
+.post-list-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+.post-list-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.post-list-title a {
+  color: var(--text);
+}
+.post-list-title a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+.post-list-desc {
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  margin: 0;
+}
+.post-list-meta {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-size: 0.8125rem;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+}
+
+/* 文章详情页大屏下 h1 字号自适应 */
+@media (min-width: 56rem) {
+  .post-header h1 { font-size: clamp(2.25rem, 4vw, 3rem); }
 }
 
 /* ---------- 响应式 ---------- */

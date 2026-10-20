@@ -64,6 +64,7 @@ const pageTitle = title ? `${title} · ${SITE.title}` : `${SITE.title} — ${SIT
   </head>
   <body>
     <a class="skip-link" href="#main">跳到主内容</a>
+    <div class="reading-progress" aria-hidden="true"></div>
     <Header />
     <main id="main">
       <div class="container">
@@ -71,5 +72,24 @@ const pageTitle = title ? `${title} · ${SITE.title}` : `${SITE.title} — ${SIT
       </div>
     </main>
     <Footer />
+    <script>
+      // 阅读进度条：在文章详情页（存在 .prose）才计算并更新宽度
+      const bar = document.querySelector('.reading-progress') as HTMLElement | null;
+      if (bar) {
+        const update = () => {
+          // 文章正文范围：从 .prose 顶部到底部；找不到则用整页
+          const scope = (document.querySelector('.prose') ?? document.body) as HTMLElement;
+          const start = scope.getBoundingClientRect().top + window.scrollY;
+          const height = scope.offsetHeight;
+          const scrolled = window.scrollY - start;
+          const ratio = height > 0 ? scrolled / (height - window.innerHeight * 0.4) : 0;
+          bar.style.width = Math.max(0, Math.min(100, ratio * 100)) + '%';
+        };
+        update();
+        document.addEventListener('scroll', update, { passive: true });
+        // 与 View Transitions 兼容
+        document.addEventListener('astro:page-load', update);
+      }
+    </script>
   </body>
 </html>

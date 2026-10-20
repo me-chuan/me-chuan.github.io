@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PostCard from '../components/PostCard.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { SITE } from '../data/site.config';
 
@@ -14,8 +13,14 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
 );
 
 const featured = projects.filter((p) => p.data.featured);
-const latestPosts = posts.slice(0, 3);
+const latestPosts = posts.slice(0, 4);
 const latestProjects = (featured.length > 0 ? featured : projects).slice(0, 4);
+
+const dateFmt = new Intl.DateTimeFormat('zh-CN', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+});
 ---
 
 <BaseLayout>
@@ -26,7 +31,7 @@ const latestProjects = (featured.length > 0 ? featured : projects).slice(0, 4);
         <h1 class="hero__name">{SITE.author}</h1>
         <p class="hero__tagline">{SITE.tagline}</p>
         <div class="hero__actions">
-          <a class="btn btn--primary" href="/blog/">看文章</a>
+          <a class="btn btn--primary" href="/blog/">读文章</a>
           <a class="btn" href="/projects/">看项目</a>
           {
             SITE.links.github && (
@@ -45,13 +50,31 @@ const latestProjects = (featured.length > 0 ? featured : projects).slice(0, 4);
       <section class="section">
         <div class="section-head">
           <h2>最新文章</h2>
-          <a href="/blog/">全部文章 →</a>
+          <a href="/blog/">完整目录 →</a>
         </div>
-        <ul class="post-list">
-          {latestPosts.map((post) => (
-            <PostCard post={post} />
+        <ol class="post-list-numbered">
+          {latestPosts.map((post, i) => (
+            <li>
+              <span class="post-list-number">
+                {String(posts.length - i).padStart(2, '0')}
+              </span>
+              <div class="post-list-main">
+                <h3 class="post-list-title">
+                  <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+                </h3>
+                <p class="post-list-desc">{post.data.description}</p>
+                <div class="post-list-meta">
+                  <time datetime={post.data.pubDate.toISOString()}>
+                    {dateFmt.format(post.data.pubDate)}
+                  </time>
+                  {post.data.tags.slice(0, 2).map((tag) => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </div>
+              </div>
+            </li>
           ))}
-        </ul>
+        </ol>
       </section>
     )
   }

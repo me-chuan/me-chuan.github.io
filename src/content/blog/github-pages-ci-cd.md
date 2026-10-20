@@ -7,6 +7,10 @@ tags: [GitHub Pages, CI/CD, GitHub Actions]
 
 这个站点的部署靠一条 GitHub Actions 工作流。整体结构只有三步，但把它调通的过程里踩到了几个坑，整理下来。
 
+<blockquote class="pull-quote">
+源代码仓库里没有构建产物，git 历史干净；线上产物和 CI 严格同源；部署历史天然可回滚——拆三段换来的不只是结构清晰，是这些确定性的副产品。
+</blockquote>
+
 ## 为什么要拆成三段
 
 ```yaml

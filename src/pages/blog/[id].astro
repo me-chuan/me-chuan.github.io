@@ -11,13 +11,15 @@ export async function getStaticPaths() {
     params: { id: post.id },
     props: {
       post,
+      // 杂志目录式的「N° XX」编号：最新 = N° 01
+      number: String(index + 1).padStart(2, '0'),
       newer: posts[index - 1] ?? null,
       older: posts[index + 1] ?? null,
     },
   }));
 }
 
-const { post, newer, older } = Astro.props;
+const { post, number, newer, older } = Astro.props;
 const { Content } = await render(post);
 
 const dateFmt = new Intl.DateTimeFormat('zh-CN', {
@@ -25,6 +27,7 @@ const dateFmt = new Intl.DateTimeFormat('zh-CN', {
   month: '2-digit',
   day: '2-digit',
 });
+const primaryTag = post.data.tags[0] ?? 'Journal';
 ---
 
 <BaseLayout
@@ -36,18 +39,20 @@ const dateFmt = new Intl.DateTimeFormat('zh-CN', {
 >
   <article class="prose">
     <header class="post-header">
-      <h1>{post.data.title}</h1>
-      <div class="post-header__meta">
-        <time datetime={post.data.pubDate.toISOString()}>{dateFmt.format(post.data.pubDate)}</time>
+      <p class="post-kicker">
+        <span class="post-kicker__number">N° {number}</span>
+        <span>{primaryTag}</span>
+        <span>{dateFmt.format(post.data.pubDate)}</span>
         {
           post.data.updatedDate && (
-            <span>
-              更新于 {dateFmt.format(post.data.updatedDate)}
-            </span>
+            <span>· 更新于 {dateFmt.format(post.data.updatedDate)}</span>
           )
         }
+      </p>
+      <h1>{post.data.title}</h1>
+      <div class="post-header__meta">
         {
-          post.data.tags.map((tag) => (
+          post.data.tags.slice(1).map((tag) => (
             <span class="tag">{tag}</span>
           ))
         }
