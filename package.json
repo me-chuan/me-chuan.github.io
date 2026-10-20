@@ -10,6 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "covers": "node scripts/generate-blog-covers.mjs",
     "astro": "astro"
   },
   "dependencies": {

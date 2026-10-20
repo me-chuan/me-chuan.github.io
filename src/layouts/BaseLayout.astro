@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SEO from '../components/SEO.astro';
+import { ClientRouter } from 'astro:transitions';
 import { SITE } from '../data/site.config';
 
 interface Props {
@@ -43,21 +44,35 @@ const pageTitle = title ? `${title} · ${SITE.title}` : `${SITE.title} — ${SIT
       ogImage={ogImage}
       noindex={noindex}
     />
+    <ClientRouter />
     <script is:inline>
       // 在首次绘制前设定主题，避免暗色模式下闪白
       (function () {
-        try {
-          var stored = localStorage.getItem('theme');
-          var theme =
-            stored === 'light' || stored === 'dark'
-              ? stored
-              : window.matchMedia('(prefers-color-scheme: dark)').matches
-                ? 'dark'
-                : 'light';
-          document.documentElement.dataset.theme = theme;
-          document.documentElement.dataset.themePref = stored || 'auto';
-        } catch (e) {
-          document.documentElement.dataset.theme = 'light';
+        function syncTheme() {
+          try {
+            var stored = localStorage.getItem('theme');
+            var theme =
+              stored === 'light' || stored === 'dark'
+                ? stored
+                : window.matchMedia('(prefers-color-scheme: dark)').matches
+                  ? 'dark'
+                  : 'light';
+            document.documentElement.dataset.theme = theme;
+            document.documentElement.dataset.themePref = stored || 'auto';
+          } catch (e) {
+            document.documentElement.dataset.theme = 'light';
+          }
+        }
+
+        syncTheme();
+
+        // <ClientRouter /> 换页时会把 <html> 的属性按新文档覆盖回来，
+        // 用户手动切过的主题会被打回默认值，所以每次交换完再贴一次。
+        // is:inline 脚本在换页时会重复执行，用全局标记防止监听器叠加。
+        var FLAG = '__themeSyncBound';
+        if (!(FLAG in window)) {
+          window[FLAG] = true;
+          document.addEventListener('astro:after-swap', syncTheme);
         }
       })();
     </script>
@@ -73,23 +88,47 @@ const pageTitle = title ? `${title} · ${SITE.title}` : `${SITE.title} — ${SIT
     </main>
     <Footer />
     <script>
-      // 阅读进度条：在文章详情页（存在 .prose）才计算并更新宽度
-      const bar = document.querySelector('.reading-progress') as HTMLElement | null;
-      if (bar) {
-        const update = () => {
-          // 文章正文范围：从 .prose 顶部到底部；找不到则用整页
-          const scope = (document.querySelector('.prose') ?? document.body) as HTMLElement;
-          const start = scope.getBoundingClientRect().top + window.scrollY;
-          const height = scope.offsetHeight;
-          const scrolled = window.scrollY - start;
-          const ratio = height > 0 ? scrolled / (height - window.innerHeight * 0.4) : 0;
-          bar.style.width = Math.max(0, Math.min(100, ratio * 100)) + '%';
-        };
-        update();
-        document.addEventListener('scroll', update, { passive: true });
-        // 与 View Transitions 兼容
-        document.addEventListener('astro:page-load', update);
-      }
+      // 阅读进度条：在文章详情页（存在 .prose）才计算并更新宽度。
+      //
+      // <ClientRouter /> 下有两点必须注意：
+      // 1. 元素要每次现查，不能像原来那样在模块顶层抓成常量 —— 换页后
+      //    .reading-progress 会被换成新节点，常量会指向已分离的旧节点。
+      // 2. 模块脚本只执行一次，所以监听只挂一遍，靠 astro:page-load 复用。
+      const updateProgress = () => {
+        const bar = document.querySelector('.reading-progress') as HTMLElement | null;
+        if (!bar) return;
+        // 文章正文范围：从 .prose 顶部到底部；找不到则用整页
+        const scope = (document.querySelector('.prose') ?? document.body) as HTMLElement;
+        const start = scope.getBoundingClientRect().top + window.scrollY;
+        const height = scope.offsetHeight;
+        const scrolled = window.scrollY - start;
+        const ratio = height > 0 ? scrolled / (height - window.innerHeight * 0.4) : 0;
+        bar.style.width = Math.max(0, Math.min(100, ratio * 100)) + '%';
+      };
+
+      updateProgress();
+      document.addEventListener('scroll', updateProgress, { passive: true });
+
+      // 目录页封面兜底：<ClientRouter /> 换页时，视图过渡过程中插入的
+      // <img loading="lazy"> 常常永远不触发加载（浏览器在过渡开始前
+      // 就已经做完了懒加载判定），表现就是缩略图位置一片空白。
+      // 把还没开始加载的封面切成 eager 即可 —— 它们本来就在首屏，
+      // 不存在为了省流量而必须推迟的代价。
+      const reviveCovers = () => {
+        document
+          .querySelectorAll<HTMLImageElement>('img.post-list-cover[loading="lazy"]')
+          .forEach((img) => {
+            if (!img.complete) img.loading = 'eager';
+          });
+      };
+
+      const onPageLoad = () => {
+        updateProgress();
+        reviveCovers();
+      };
+
+      onPageLoad();
+      document.addEventListener('astro:page-load', onPageLoad);
     </script>
   </body>
 </html>

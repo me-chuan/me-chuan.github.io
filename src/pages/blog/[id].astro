@@ -28,6 +28,14 @@ const dateFmt = new Intl.DateTimeFormat('zh-CN', {
   day: '2-digit',
 });
 const primaryTag = post.data.tags[0] ?? 'Journal';
+
+// 封面存在时：详情页当「图版」用，同时接管社交分享卡片（og:image）
+const coverFiles = import.meta.glob('../../assets/covers/*.png', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+}) as Record<string, string>;
+const coverSrc = coverFiles[`../../assets/covers/${post.id}.png`];
 ---
 
 <BaseLayout
@@ -36,8 +44,21 @@ const primaryTag = post.data.tags[0] ?? 'Journal';
   type="article"
   publishedTime={post.data.pubDate}
   tags={post.data.tags}
+  ogImage={coverSrc}
 >
   <article class="prose">
+    {
+      coverSrc && (
+        <img
+          class="post-cover post-cover--hero"
+          src={coverSrc}
+          alt={`${post.data.title} — 封面`}
+          width={1200}
+          height={630}
+          decoding="async"
+        />
+      )
+    }
     <header class="post-header">
       <p class="post-kicker">
         <span class="post-kicker__number">N° {number}</span>

@@ -33,7 +33,6 @@ const isActive = (href: string) =>
 
 <script>
   const KEY = 'theme';
-  const btn = document.getElementById('theme-toggle');
 
   const systemTheme = () =>
     window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -48,9 +47,19 @@ const isActive = (href: string) =>
     document.documentElement.dataset.themePref = stored() ?? 'auto';
   };
 
-  if (btn) {
+  // <ClientRouter /> 下模块脚本只执行一次，而 #theme-toggle 会在换页时被换成新节点。
+  // 绑在节点上的监听器会随旧节点一起失效，所以这里绑在 document 上做事件委托 ——
+  // document 在换页过程中始终不变，委托就一直在。
+  // 用全局标记防止 HMR / 重复执行时叠加监听器。
+  const flag = '__themeToggleBound';
+  if (!(flag in window)) {
+    (window as unknown as Record<string, unknown>)[flag] = true;
+
     // 三态循环：跟随系统 -> 浅色 -> 深色 -> 跟随系统
-    btn.addEventListener('click', () => {
+    document.addEventListener('click', (e) => {
+      const target = (e.target as HTMLElement | null)?.closest?.('#theme-toggle');
+      if (!target) return;
+
       const current = stored() ?? 'auto';
       const next =
         current === 'auto'
@@ -64,10 +73,10 @@ const isActive = (href: string) =>
       else localStorage.setItem(KEY, next);
       apply(next === 'auto' ? systemTheme() : next);
     });
-  }
 
-  // 跟随系统时，实时响应系统主题变化
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    if (!stored()) apply(systemTheme());
-  });
+    // 跟随系统时，实时响应系统主题变化
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      if (!stored()) apply(systemTheme());
+    });
+  }
 </script>

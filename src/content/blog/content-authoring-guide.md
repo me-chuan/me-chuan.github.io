@@ -88,6 +88,7 @@ pnpm dev        # 开发服务器，热更新
 pnpm build      # 构建到 dist/，和 CI 产物一致
 pnpm preview    # 本地预览构建结果
 pnpm check      # TypeScript + 内容 schema 检查
+pnpm covers     # 重新生成全部文章封面到 src/assets/covers/
 ```
 
 推送到 `main` 分支会自动触发构建和部署。

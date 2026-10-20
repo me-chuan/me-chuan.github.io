@@ -12,6 +12,17 @@ const dateFmt = new Intl.DateTimeFormat('zh-CN', {
   month: '2-digit',
   day: '2-digit',
 });
+
+// 封面由 scripts/generate-blog-covers.mjs 生成到 src/assets/covers/。
+// glob 静态枚举 + ?url 拿到 Vite 指纹化后的最终路径；
+// 没生成封面的文章在 glob 里没有这个 key，模板自动退回纯文字目录。
+const coverFiles = import.meta.glob('../../assets/covers/*.png', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+}) as Record<string, string>;
+const coverFor = (id: string) => coverFiles[`../../assets/covers/${id}.png`];
+const hasCovers = posts.some((post) => Boolean(coverFor(post.id)));
 ---
 
 <BaseLayout
@@ -25,11 +36,11 @@ const dateFmt = new Intl.DateTimeFormat('zh-CN', {
 
   {
     posts.length > 0 ? (
-      <ol class="post-list-numbered">
+      <ol class:list={['post-list-numbered', { 'post-list-numbered--cover': hasCovers }]}>
         {posts.map((post, i) => (
           <li>
             <span class="post-list-number">
-              {String(posts.length - i).padStart(2, '0')}
+              {String(i + 1).padStart(2, '0')}
             </span>
             <div class="post-list-main">
               <h3 class="post-list-title">
@@ -43,6 +54,19 @@ const dateFmt = new Intl.DateTimeFormat('zh-CN', {
                 {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
               </div>
             </div>
+            {
+              coverFor(post.id) && (
+                <img
+                  class="post-cover post-list-cover"
+                  src={coverFor(post.id)}
+                  alt=""
+                  width={1200}
+                  height={630}
+                  loading="lazy"
+                  decoding="async"
+                />
+              )
+            }
           </li>
         ))}
       </ol>
