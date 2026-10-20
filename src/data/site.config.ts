@@ -5,13 +5,13 @@
 
 export const SITE = {
   /** 站点名 / 你的名字 */
-  title: 'Chichuan',
+  title: 'chuan',
   /** 首页标题后缀，出现在 <title> 与 OG 标题里 */
   tagline: 'Engineering Notes & Projects',
   /** 全站默认描述，用于 SEO 与社交分享卡片 */
   description: '个人主页与写作：工程项目、开源实践与技术笔记。',
   /** 作者名，用于 JSON-LD Person schema 与文章署名 */
-  author: 'Chichuan',
+  author: 'chuan',
   /** 语言标记，影响 <html lang> 与日期格式 */
   lang: 'zh-CN',
   /** 站点根地址，与 astro.config.mjs 的 site 保持一致 */
@@ -21,8 +21,7 @@ export const SITE = {
   /** 社交与联系方式。留空字符串则不渲染对应入口。 */
   links: {
     github: 'https://github.com/me-chuan',
-    // TODO: 填上你的邮箱，填了才会显示联系按钮
-    email: '',
+    email: 'lemonchuan@sjtu.edu.cn',
     // TODO: 想加别的平台就往下追加，渲染逻辑自动支持
     // linkedin: 'https://www.linkedin.com/in/...',
     // x: 'https://x.com/...',
