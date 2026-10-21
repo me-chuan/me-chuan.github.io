@@ -37,6 +37,7 @@ jobs:
 
   link-check:
     name: Dead Link Check
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Download site artifact
@@ -47,17 +48,19 @@ jobs:
       - name: Check links in built site
         uses: lycheeverse/lychee-action@v2.9.0
         with:
-          args: --no-progress './dist/**/*.html'
+          args: --no-progress --root-dir '${{ github.workspace }}/dist' --index-files index.html --exclude '^https://me-chuan[.]github[.]io/' './dist/**/*.html'
           fail: true
 
   lighthouse:
     name: Lighthouse CI
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: read
       checks: write
       pull-requests: write
     steps:
+      - uses: actions/checkout@v7.0.1
       - name: Download site artifact
         uses: actions/download-artifact@v8.0.2
         with:
