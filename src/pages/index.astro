@@ -1,20 +1,18 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProjectCard from '../components/ProjectCard.astro';
 import { SITE } from '../data/site.config';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
-
 const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
   (a, b) => a.data.order - b.data.order
 );
 
-const featured = projects.filter((p) => p.data.featured);
-const latestPosts = posts.slice(0, 4);
-const latestProjects = (featured.length > 0 ? featured : projects).slice(0, 4);
+// 站点维护手册仍保留在博客目录，首页优先呈现对访客有价值的文章。
+const selectedPosts = posts.filter((post) => post.id !== 'content-authoring-guide').slice(0, 3);
+const featuredProject = projects.find((project) => project.data.featured) ?? projects[0];
 
 const dateFmt = new Intl.DateTimeFormat('zh-CN', {
   year: 'numeric',
@@ -24,54 +22,89 @@ const dateFmt = new Intl.DateTimeFormat('zh-CN', {
 ---
 
 <BaseLayout>
-  <section class="hero">
-    <div class="hero__inner">
-      <img class="hero__avatar" src={SITE.avatar} alt={`${SITE.author} 的头像`} width="88" height="88" />
-      <div class="hero__body">
-        <h1 class="hero__name">{SITE.author}</h1>
-        <p class="hero__tagline">{SITE.tagline}</p>
-        <div class="hero__actions">
-          <a class="btn btn--primary" href="/blog/">读文章</a>
-          <a class="btn" href="/projects/">看项目</a>
-          {
-            SITE.links.github && (
-              <a class="btn" href={SITE.links.github} target="_blank" rel="me noopener noreferrer">
-                GitHub
-              </a>
-            )
-          }
-        </div>
+  <section class="home-hero" aria-labelledby="home-intro">
+    <div class="home-hero__main">
+      <p class="home-eyebrow"><span class="home-eyebrow__rule"></span> CHUAN · ENGINEERING JOURNAL</p>
+      <h1 id="home-intro" class="home-hero__title">把想法写清楚，<br /><em>也把它做出来。</em></h1>
+      <p class="home-hero__intro">
+        你好，我是 {SITE.author}。关注语音、大模型与软件工程；在这里记录技术选择、项目实践，以及值得留下的具体问题。
+      </p>
+      <div class="home-hero__actions">
+        <a class="btn btn--primary" href="#selected-work">看精选项目 <span aria-hidden="true">↗</span></a>
+        <a class="home-text-link" href="/about/">多了解我 <span aria-hidden="true">→</span></a>
       </div>
     </div>
+    <aside class="home-hero__aside" aria-label="关注方向">
+      <span class="home-hero__aside-label">CURRENTLY EXPLORING / 2026</span>
+      <div class="home-hero__aside-rule"></div>
+      <p>语音 <span>×</span> 大模型</p>
+      <p>Vibe coding</p>
+      <p>工程实践与技术写作</p>
+      <span class="home-hero__aside-bottom">不断学习，持续记录。</span>
+    </aside>
   </section>
 
   {
-    latestPosts.length > 0 && (
-      <section class="section">
-        <div class="section-head">
-          <h2>最新文章</h2>
-          <a href="/blog/">完整目录 →</a>
+    featuredProject && (
+      <section class="home-section" id="selected-work" aria-labelledby="selected-work-title">
+        <div class="home-section__heading">
+          <div>
+            <p class="home-section__index">01 / SELECTED WORK</p>
+            <h2 id="selected-work-title">做过的东西</h2>
+          </div>
+          <a href="/projects/">全部项目 <span aria-hidden="true">↗</span></a>
         </div>
-        <ol class="post-list-numbered">
-          {latestPosts.map((post, i) => (
+
+        <article class="featured-project">
+          <div class="featured-project__visual" aria-hidden="true">
+            <div class="featured-project__visual-top"><span>chuan / journal</span><span>01 — 03</span></div>
+            <div class="featured-project__visual-body">
+              <span>BUILD · WRITE · ITERATE</span>
+              <strong>把实践<br />变成记录。</strong>
+              <i></i><i></i><i></i>
+            </div>
+            <div class="featured-project__visual-bottom"><span>ENGINEERING NOTES</span><span>2026</span></div>
+          </div>
+          <div class="featured-project__content">
+            <p class="featured-project__label">WEB / WRITING SYSTEM</p>
+            <h3><a href={`/projects/${featuredProject.id}/`}>{featuredProject.data.title}</a></h3>
+            <p class="featured-project__desc">{featuredProject.data.description}</p>
+            <ul class="tag-list" aria-label="项目技术">
+              {featuredProject.data.tech.map((tech) => <li><span class="tag">{tech}</span></li>)}
+            </ul>
+            <div class="featured-project__links">
+              <a href={`/projects/${featuredProject.id}/`}>了解项目 <span aria-hidden="true">↗</span></a>
+              {featuredProject.data.repo && <a href={featuredProject.data.repo} target="_blank" rel="noopener noreferrer">查看源码 <span aria-hidden="true">↗</span></a>}
+            </div>
+          </div>
+        </article>
+      </section>
+    )
+  }
+
+  {
+    selectedPosts.length > 0 && (
+      <section class="home-section" aria-labelledby="selected-writing-title">
+        <div class="home-section__heading">
+          <div>
+            <p class="home-section__index">02 / SELECTED WRITING</p>
+            <h2 id="selected-writing-title">最近在写</h2>
+          </div>
+          <a href="/blog/">全部文章 <span aria-hidden="true">↗</span></a>
+        </div>
+        <ol class="post-list-numbered home-post-list">
+          {selectedPosts.map((post, i) => (
             <li>
-              <span class="post-list-number">
-                {String(i + 1).padStart(2, '0')}
-              </span>
+              <span class="post-list-number">{String(i + 1).padStart(2, '0')}</span>
               <div class="post-list-main">
-                <h3 class="post-list-title">
-                  <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-                </h3>
+                <h3 class="post-list-title"><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
                 <p class="post-list-desc">{post.data.description}</p>
                 <div class="post-list-meta">
-                  <time datetime={post.data.pubDate.toISOString()}>
-                    {dateFmt.format(post.data.pubDate)}
-                  </time>
-                  {post.data.tags.slice(0, 2).map((tag) => (
-                    <span class="tag">{tag}</span>
-                  ))}
+                  <time datetime={post.data.pubDate.toISOString()}>{dateFmt.format(post.data.pubDate)}</time>
+                  {post.data.tags.slice(0, 2).map((tag) => <span class="tag">{tag}</span>)}
                 </div>
               </div>
+              <span class="home-post-list__arrow" aria-hidden="true">↗</span>
             </li>
           ))}
         </ol>
@@ -79,19 +112,14 @@ const dateFmt = new Intl.DateTimeFormat('zh-CN', {
     )
   }
 
-  {
-    latestProjects.length > 0 && (
-      <section class="section">
-        <div class="section-head">
-          <h2>项目</h2>
-          <a href="/projects/">全部项目 →</a>
-        </div>
-        <div class="card-grid">
-          {latestProjects.map((project) => (
-            <ProjectCard project={project} />
-          ))}
-        </div>
-      </section>
-    )
-  }
+  <section class="home-outro" aria-labelledby="home-outro-title">
+    <div>
+      <p class="home-section__index">03 / ABOUT THIS SPACE</p>
+      <h2 id="home-outro-title">一个持续更新的<br />个人工作台。</h2>
+    </div>
+    <div class="home-outro__body">
+      <p>这个网站收集我的工程笔记、技术判断和正在做的项目。文章会讲清楚选择背后的理由，项目则保留从想法到实现的过程。</p>
+      <a href="/about/">关于我 <span aria-hidden="true">↗</span></a>
+    </div>
+  </section>
 </BaseLayout>

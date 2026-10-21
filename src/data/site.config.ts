@@ -7,9 +7,9 @@ export const SITE = {
   /** 站点名 / 你的名字 */
   title: 'chuan',
   /** 首页标题后缀，出现在 <title> 与 OG 标题里 */
-  tagline: 'Engineering Notes & Projects',
+  tagline: '工程笔记与项目实践',
   /** 全站默认描述，用于 SEO 与社交分享卡片 */
-  description: '个人主页与写作：工程项目、开源实践与技术笔记。',
+  description: 'chuan 的个人主页：关于语音、大模型与软件工程的项目实践和技术笔记。',
   /** 作者名，用于 JSON-LD Person schema 与文章署名 */
   author: 'chuan',
   /** 语言标记，影响 <html lang> 与日期格式 */
