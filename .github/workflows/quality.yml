@@ -37,6 +37,7 @@ jobs:
 
   link-check:
     name: Dead Link Check
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Download site artifact
@@ -52,6 +53,7 @@ jobs:
 
   lighthouse:
     name: Lighthouse CI
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: read
