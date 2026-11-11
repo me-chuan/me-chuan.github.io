@@ -1,0 +1,17 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  icon: string;
+}
+
+const { id, title, icon } = Astro.props;
+---
+
+<section class="retro-window" id={id} aria-labelledby={`${id}-title`}>
+  <header class="retro-window__bar">
+    <h2 id={`${id}-title`}><span aria-hidden="true">{icon}</span> {title}</h2>
+    <span class="retro-window__marks" aria-hidden="true"><i></i><i></i></span>
+  </header>
+  <div class="retro-window__body"><slot /></div>
+</section>

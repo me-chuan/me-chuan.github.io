@@ -2,15 +2,26 @@
 import { SITE } from '../data/site.config';
 
 const path = Astro.url.pathname;
+const address = new URL(SITE.url).host + path;
 const isActive = (href: string) =>
   href === '/' ? path === '/' : path === href || path.startsWith(href);
 ---
 
 <header class="site-header">
+  <div class="retro-chrome" aria-hidden="true">
+    <div class="retro-chrome__tab">
+      <span class="retro-chrome__lights"><i></i><i></i><i></i></span>
+      <span class="retro-chrome__label">✦ {SITE.title}.dev</span>
+    </div>
+    <div class="retro-chrome__toolbar">
+      <span>← →</span>
+      <span class="retro-chrome__address">{address}</span>
+    </div>
+  </div>
   <div class="container site-header__inner">
     <a class="site-brand" href="/">
-      <span class="site-brand__mark" aria-hidden="true"></span>
-      <span>{SITE.title}</span>
+      <span class="retro-monitor" aria-hidden="true"></span>
+      <span>{SITE.title}.dev <b aria-hidden="true">&gt;_</b></span>
     </a>
 
     <nav class="site-nav" aria-label="主导航">
@@ -21,6 +32,11 @@ const isActive = (href: string) =>
           </a>
         ))
       }
+      <button class="retro-motion-toggle" data-retro-motion-toggle type="button" aria-label="暂停动态背景" aria-pressed="false" hidden>
+        <span class="retro-motion-toggle__pause" aria-hidden="true">Ⅱ</span>
+        <span class="retro-motion-toggle__play" aria-hidden="true">▶</span>
+        背景
+      </button>
       <button class="theme-toggle" type="button" id="theme-toggle" aria-label="切换主题" title="切换主题">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="4"></circle>

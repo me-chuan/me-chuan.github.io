@@ -1,7 +1,9 @@
 ---
 import '../styles/global.css';
+import '../styles/retro.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import RetroBackdrop from '../components/RetroBackdrop.astro';
 import SEO from '../components/SEO.astro';
 import { ClientRouter } from 'astro:transitions';
 import { SITE } from '../data/site.config';
@@ -80,9 +82,10 @@ const pageTitle = title ? `${title} · ${SITE.title}` : `${SITE.title} — ${SIT
   <body>
     <a class="skip-link" href="#main">跳到主内容</a>
     <div class="reading-progress" aria-hidden="true"></div>
+    <RetroBackdrop />
     <Header />
     <main id="main">
-      <div class="container">
+      <div class:list={['container', { 'retro-page': Astro.url.pathname !== '/' }]}>
         <slot />
       </div>
     </main>

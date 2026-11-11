@@ -1,0 +1,58 @@
+---
+const stars = [
+  [4, 26], [8, 48], [11, 69], [16, 20], [19, 54], [23, 82], [26, 33], [31, 62],
+  [35, 91], [42, 27], [46, 46], [49, 72], [54, 19], [58, 37], [62, 87], [66, 59],
+  [70, 28], [74, 77], [78, 19], [82, 52], [86, 32], [90, 67], [94, 23], [97, 84],
+];
+---
+
+<div class="retro-scene" data-retro-scene transition:persist="retro-scene" aria-hidden="true">
+  <div class="retro-scene__grid"></div>
+  <div class="retro-scene__stars">
+    {stars.map(([x, y], index) => (
+      <i style={`--x:${x}%;--y:${y}%;--phase:${index % 7 * -1.4}s`}></i>
+    ))}
+  </div>
+  <div class="retro-scene__clouds">
+    <i class="retro-cloud retro-cloud--left"></i>
+    <i class="retro-cloud retro-cloud--right"></i>
+    <i class="retro-cloud retro-cloud--far"></i>
+  </div>
+</div>
+
+<script>
+  const motionKey = 'retro-background-paused';
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let paused = false;
+
+  try {
+    paused = localStorage.getItem(motionKey) === 'true';
+  } catch {
+    // The page still supports pausing when storage is unavailable.
+  }
+
+  const syncMotion = () => {
+    const stopped = paused || reducedMotion.matches;
+    document.querySelector('[data-retro-scene]')?.toggleAttribute('data-paused', stopped);
+    const button = document.querySelector<HTMLButtonElement>('[data-retro-motion-toggle]');
+    if (!button) return;
+    button.hidden = reducedMotion.matches;
+    button.setAttribute('aria-pressed', String(stopped));
+  };
+
+  document.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element) || !event.target.closest('[data-retro-motion-toggle]')) return;
+    if (reducedMotion.matches) return;
+    paused = !paused;
+    try {
+      localStorage.setItem(motionKey, String(paused));
+    } catch {
+      // Keep the current preference in memory.
+    }
+    syncMotion();
+  });
+
+  reducedMotion.addEventListener('change', syncMotion);
+  document.addEventListener('astro:after-swap', syncMotion);
+  syncMotion();
+</script>
