@@ -1,0 +1,37 @@
+name: Build both site editions
+description: Build the original site at the root and the retro edition at /retro/
+runs:
+  using: composite
+  steps:
+    - name: Build original edition
+      shell: bash
+      run: |
+        pnpm install --frozen-lockfile
+        pnpm check
+        pnpm build
+
+    - name: Check out retro edition
+      uses: actions/checkout@v7.0.1
+      with:
+        # Update this revision when publishing a new retro-style release.
+        ref: ba140611bf0a1c8e62bd9cfcd9ae28ba9a014f90
+        path: retro-source
+        persist-credentials: false
+
+    - name: Build retro edition
+      shell: bash
+      working-directory: retro-source
+      env:
+        SITE_BASE_PATH: /retro
+      run: |
+        pnpm install --frozen-lockfile
+        pnpm check
+        pnpm build
+
+    - name: Combine Pages output
+      shell: bash
+      run: |
+        test -f dist/index.html
+        test -f retro-source/dist/index.html
+        test ! -e dist/retro
+        mv retro-source/dist dist/retro

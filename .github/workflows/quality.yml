@@ -25,9 +25,8 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm check
-      - run: pnpm build
+      - name: Build original and retro editions
+        uses: ./.github/actions/build-site
       - name: Upload site artifact
         uses: actions/upload-artifact@v7.0.2
         with:
