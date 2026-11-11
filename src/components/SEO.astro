@@ -1,4 +1,7 @@
 ---
+import { SITE } from '../data/site.config';
+import { sitePath } from '../data/site-path';
+
 interface Props {
   title: string;
   description: string;
@@ -17,14 +20,13 @@ const {
   canonical,
   publishedTime,
   tags = [],
-  ogImage = '/og-image.png',
+  ogImage = sitePath('/og-image.png'),
   noindex = false,
 } = Astro.props;
 
-const site = Astro.site ?? new URL('https://me-chuan.github.io');
+const site = Astro.site ?? new URL(SITE.url);
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, site).href;
 const ogImageUrl = new URL(ogImage, site).href;
-const { SITE } = await import('../data/site.config');
 ---
 
 <title>{title}</title>
@@ -48,9 +50,9 @@ const { SITE } = await import('../data/site.config');
 {publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
 {tags.map((tag) => <meta property="article:tag" content={tag} />)}
 
-<link rel="alternate" type="application/rss+xml" title={`${SITE.title} · RSS`} href="/rss.xml" />
-<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-<link rel="sitemap" href="/sitemap-index.xml" />
+<link rel="alternate" type="application/rss+xml" title={`${SITE.title} · RSS`} href={sitePath('/rss.xml')} />
+<link rel="icon" href={sitePath('/favicon.svg')} type="image/svg+xml" />
+<link rel="sitemap" href={sitePath('/sitemap-index.xml')} />
 
 {
   type === 'website' ? (
@@ -61,7 +63,7 @@ const { SITE } = await import('../data/site.config');
         '@type': 'Person',
         name: SITE.author,
         url: SITE.url,
-        image: new URL(SITE.avatar, site).href,
+        image: new URL(sitePath(SITE.avatar), site).href,
         sameAs: [SITE.links.github].filter(Boolean),
       })}
     />

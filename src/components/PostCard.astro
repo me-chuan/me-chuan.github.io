@@ -1,12 +1,13 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { sitePath } from '../data/site-path';
 
 interface Props {
   post: CollectionEntry<'blog'>;
   href?: string;
 }
 
-const { post, href = `/blog/${post.id}/` } = Astro.props;
+const { post, href = sitePath(`/blog/${post.id}/`) } = Astro.props;
 const dateFmt = new Intl.DateTimeFormat('zh-CN', {
   year: 'numeric',
   month: '2-digit',

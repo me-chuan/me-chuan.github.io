@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sitePath } from '../../data/site-path';
 
 export async function getStaticPaths() {
   const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
@@ -55,6 +56,6 @@ const dateFmt = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: '2-di
   </article>
 
   <nav class="post-nav" aria-label="项目导航">
-    <a href="/projects/">← 返回项目列表</a>
+    <a href={sitePath('/projects/')}>← 返回项目列表</a>
   </nav>
 </BaseLayout>

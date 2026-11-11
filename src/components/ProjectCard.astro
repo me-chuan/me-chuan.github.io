@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { sitePath } from '../data/site-path';
 
 interface Props {
   project: CollectionEntry<'projects'>;
@@ -7,7 +8,7 @@ interface Props {
 
 const { project } = Astro.props;
 const { title, description, tech, repo, demo } = project.data;
-const href = repo ?? demo ?? `/projects/${project.id}/`;
+const href = repo ?? demo ?? sitePath(`/projects/${project.id}/`);
 ---
 
 <article class="card">

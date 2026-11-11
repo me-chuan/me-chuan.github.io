@@ -1,10 +1,11 @@
 ---
 import { SITE } from '../data/site.config';
+import { sitePath } from '../data/site-path';
 
 const path = Astro.url.pathname;
 const address = new URL(SITE.url).host + path;
-const isActive = (href: string) =>
-  href === '/' ? path === '/' : path === href || path.startsWith(href);
+const isActive = (href: `/${string}`) =>
+  href === '/' ? path === sitePath('/') : path.startsWith(sitePath(href));
 ---
 
 <header class="site-header">
@@ -19,7 +20,7 @@ const isActive = (href: string) =>
     </div>
   </div>
   <div class="container site-header__inner">
-    <a class="site-brand" href="/">
+    <a class="site-brand" href={sitePath('/')}>
       <span class="retro-monitor" aria-hidden="true"></span>
       <span>{SITE.title}.dev <b aria-hidden="true">&gt;_</b></span>
     </a>
@@ -27,7 +28,7 @@ const isActive = (href: string) =>
     <nav class="site-nav" aria-label="主导航">
       {
         SITE.nav.map((item) => (
-          <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+          <a href={sitePath(item.href)} aria-current={isActive(item.href) ? 'page' : undefined}>
             {item.label}
           </a>
         ))
@@ -48,7 +49,7 @@ const isActive = (href: string) =>
 </header>
 
 <script>
-  const KEY = 'theme';
+  const KEY = 'retro-theme';
 
   const systemTheme = () =>
     window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';

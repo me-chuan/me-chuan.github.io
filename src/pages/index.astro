@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RetroWindow from '../components/RetroWindow.astro';
 import { SITE } from '../data/site.config';
+import { sitePath } from '../data/site-path';
 import workstation from '../assets/retro-workstation.webp';
 
 const posts = (await getCollection('blog', ({ id, data }) => !data.draft && id !== 'content-authoring-guide'))
@@ -15,7 +16,7 @@ const entries = [
   ...(project ? [{
     title: project.data.title,
     description: project.data.description,
-    href: `/projects/${project.id}/`,
+    href: sitePath(`/projects/${project.id}/`),
     type: '项目',
     tags: project.data.tech,
     icon: '>_',
@@ -23,7 +24,7 @@ const entries = [
   ...posts.map(({ id, data }, index) => ({
     title: data.title,
     description: data.description,
-    href: `/blog/${id}/`,
+    href: sitePath(`/blog/${id}/`),
     type: '笔记',
     tags: data.tags,
     icon: index === 0 ? '↗' : '</>',
@@ -37,7 +38,7 @@ const entries = [
       <h1 id="home-intro" lang="en">Research &amp; Dev<br /><span>Portfolio</span></h1>
       <p>你好，我是 {SITE.author}。我在这里记录<mark>语音与大模型</mark>的学习笔记，以及<mark>软件工程</mark>里的项目实践。</p>
       <div class="retro-hero__actions">
-        <a class="retro-button retro-button--start" href="/projects/"><span aria-hidden="true">▶</span> 查看项目</a>
+        <a class="retro-button retro-button--start" href={sitePath('/projects/')}><span aria-hidden="true">▶</span> 查看项目</a>
         <a class="retro-button retro-button--ghost" href={SITE.links.github}>GitHub <span aria-hidden="true">↗</span></a>
       </div>
     </div>
@@ -75,14 +76,14 @@ const entries = [
         <span class="retro-about__avatar" aria-hidden="true"><span class="retro-monitor"></span></span>
         <div>
           <p>我是 {SITE.author}，目前关注语音、大模型与 vibe coding，也会把做项目时的取舍和经验写下来。</p>
-          <a href="/about/">更多关于我 <span aria-hidden="true">→</span></a>
+          <a href={sitePath('/about/')}>更多关于我 <span aria-hidden="true">→</span></a>
         </div>
       </div>
     </RetroWindow>
     <RetroWindow id="shortcuts" title="快捷入口" icon="▧">
       <ul class="retro-shortcuts">
-        <li><a href="/blog/">博客归档 <span aria-hidden="true">↗</span></a></li>
-        <li><a href="/rss.xml">RSS 订阅 <span aria-hidden="true">↗</span></a></li>
+        <li><a href={sitePath('/blog/')}>博客归档 <span aria-hidden="true">↗</span></a></li>
+        <li><a href={sitePath('/rss.xml')}>RSS 订阅 <span aria-hidden="true">↗</span></a></li>
         <li><a href={`mailto:${SITE.links.email}`}>发邮件 <span aria-hidden="true">↗</span></a></li>
       </ul>
     </RetroWindow>

@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sitePath } from '../../data/site-path';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
@@ -87,11 +88,11 @@ const coverSrc = coverFiles[`../../assets/covers/${post.id}.png`];
     (newer || older) && (
       <nav class="post-nav" aria-label="文章导航">
         {older ? (
-          <a href={`/blog/${older.id}/`}>← {older.data.title}</a>
+          <a href={sitePath(`/blog/${older.id}/`)}>← {older.data.title}</a>
         ) : (
           <span />
         )}
-        {newer && <a href={`/blog/${newer.id}/`}>{newer.data.title} →</a>}
+        {newer && <a href={sitePath(`/blog/${newer.id}/`)}>{newer.data.title} →</a>}
       </nav>
     )
   }

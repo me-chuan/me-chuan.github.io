@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../data/site.config';
+import { sitePath } from '../data/site-path';
 
 const linkEntries = Object.entries(SITE.links).filter(([, value]) => Boolean(value));
 const labelMap: Record<string, string> = {
@@ -26,9 +27,9 @@ const labelMap: Record<string, string> = {
 
     <h2>这里有什么</h2>
     <ul>
-      <li><a href="/blog/">博客</a> —— 工程实践、技术笔记与踩坑记录。</li>
-      <li><a href="/projects/">项目</a> —— 开源仓库与作品集。</li>
-      <li><a href="/rss.xml">RSS</a> —— 订阅更新，不用回来刷。</li>
+      <li><a href={sitePath('/blog/')}>博客</a> —— 工程实践、技术笔记与踩坑记录。</li>
+      <li><a href={sitePath('/projects/')}>项目</a> —— 开源仓库与作品集。</li>
+      <li><a href={sitePath('/rss.xml')}>RSS</a> —— 订阅更新，不用回来刷。</li>
     </ul>
 
     <h2>联系方式</h2>

@@ -7,6 +7,7 @@ import RetroBackdrop from '../components/RetroBackdrop.astro';
 import SEO from '../components/SEO.astro';
 import { ClientRouter } from 'astro:transitions';
 import { SITE } from '../data/site.config';
+import { sitePath } from '../data/site-path';
 
 interface Props {
   title?: string;
@@ -52,7 +53,7 @@ const pageTitle = title ? `${title} · ${SITE.title}` : `${SITE.title} — ${SIT
       (function () {
         function syncTheme() {
           try {
-            var stored = localStorage.getItem('theme');
+            var stored = localStorage.getItem('retro-theme');
             var theme =
               stored === 'light' || stored === 'dark'
                 ? stored
@@ -85,7 +86,7 @@ const pageTitle = title ? `${title} · ${SITE.title}` : `${SITE.title} — ${SIT
     <RetroBackdrop />
     <Header />
     <main id="main">
-      <div class:list={['container', { 'retro-page': Astro.url.pathname !== '/' }]}>
+      <div class:list={['container', { 'retro-page': Astro.url.pathname !== sitePath('/') }]}>
         <slot />
       </div>
     </main>

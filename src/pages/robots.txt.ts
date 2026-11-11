@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { SITE } from '../data/site.config';
+import { sitePath } from '../data/site-path';
 
 /**
  * 构建时生成 robots.txt。
@@ -7,13 +8,13 @@ import { SITE } from '../data/site.config';
  * 不需要手工维护第二处域名。
  */
 export const GET: APIRoute = ({ site }) => {
-  const base = (site ?? new URL(SITE.url)).href.replace(/\/+$/, '');
+  const sitemap = new URL(sitePath('/sitemap-index.xml'), site ?? SITE.url).href;
 
   const body = [
     'User-agent: *',
     'Allow: /',
     '',
-    `Sitemap: ${base}/sitemap-index.xml`,
+    `Sitemap: ${sitemap}`,
     '',
   ].join('\n');
 
