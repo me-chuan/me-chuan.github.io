@@ -1,0 +1,31 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v7.4.0"><title>404 · chuan</title><meta name="description" content="页面不存在"><meta name="robots" content="noindex, nofollow"><link rel="canonical" href="https://me-chuan.github.io/404/"><meta property="og:type" content="website"><meta property="og:site_name" content="chuan"><meta property="og:title" content="404 · chuan"><meta property="og:description" content="页面不存在"><meta property="og:url" content="https://me-chuan.github.io/404/"><meta property="og:image" content="https://me-chuan.github.io/og-image.png"><meta property="og:locale" content="zh-CN"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="404 · chuan"><meta name="twitter:description" content="页面不存在"><meta name="twitter:image" content="https://me-chuan.github.io/og-image.png"><link rel="alternate" type="application/rss+xml" title="chuan · RSS" href="/rss.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="sitemap" href="/sitemap-index.xml"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"chuan","url":"https://me-chuan.github.io","image":"https://me-chuan.github.io/avatar.svg","sameAs":["https://github.com/me-chuan"]}</script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.BDCjmQ8c.js"></script><script>
+      // 在首次绘制前设定主题，避免暗色模式下闪白
+      (function () {
+        function syncTheme() {
+          try {
+            var stored = localStorage.getItem('theme');
+            var theme =
+              stored === 'light' || stored === 'dark'
+                ? stored
+                : window.matchMedia('(prefers-color-scheme: dark)').matches
+                  ? 'dark'
+                  : 'light';
+            document.documentElement.dataset.theme = theme;
+            document.documentElement.dataset.themePref = stored || 'auto';
+          } catch (e) {
+            document.documentElement.dataset.theme = 'light';
+          }
+        }
+
+        syncTheme();
+
+        // <ClientRouter /> 换页时会把 <html> 的属性按新文档覆盖回来，
+        // 用户手动切过的主题会被打回默认值，所以每次交换完再贴一次。
+        // is:inline 脚本在换页时会重复执行，用全局标记防止监听器叠加。
+        var FLAG = '__themeSyncBound';
+        if (!(FLAG in window)) {
+          window[FLAG] = true;
+          document.addEventListener('astro:after-swap', syncTheme);
+        }
+      })();
+    </script><link rel="stylesheet" href="/_astro/BaseLayout.mUVeUsvE.css"></head><body><a class="skip-link" href="#main">跳到主内容</a><div class="reading-progress" aria-hidden="true"></div><header class="site-header"><div class="container site-header__inner"><a class="site-brand" href="/"><span class="site-brand__mark" aria-hidden="true"></span><span>chuan</span></a><nav class="site-nav" aria-label="主导航"><a href="/">首页</a><a href="/blog/">博客</a><a href="/projects/">项目</a><a href="/about/">关于</a><button class="theme-toggle" type="button" id="theme-toggle" aria-label="切换主题" title="切换主题"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg></button></nav></div></header><script type="module">var e=`theme`,t=()=>window.matchMedia(`(prefers-color-scheme: dark)`).matches?`dark`:`light`,n=()=>{let t=localStorage.getItem(e);return t===`light`||t===`dark`?t:null},r=e=>{document.documentElement.dataset.theme=e,document.documentElement.dataset.themePref=n()??`auto`},i=`__themeToggleBound`;i in window||(window[i]=!0,document.addEventListener(`click`,i=>{if(!i.target?.closest?.(`#theme-toggle`))return;let a=n()??`auto`,o=a===`auto`?t()===`dark`?`light`:`dark`:a===`dark`?`auto`:`dark`;o===`auto`?localStorage.removeItem(e):localStorage.setItem(e,o),r(o===`auto`?t():o)}),window.matchMedia(`(prefers-color-scheme: dark)`).addEventListener(`change`,()=>{n()||r(t())}));</script><main id="main"><div class="container"><div class="error-page"><p class="error-page__code">404</p><h1 class="page-title">这个页面走丢了</h1><p class="page-lead" style="margin-inline: auto">链接可能已经失效，或者页面被移动到了别处。</p><div class="hero__actions" style="justify-content: center"><a class="btn btn--primary" href="/">回到首页</a><a class="btn" href="/blog/">看看文章</a></div></div></div></main><footer class="site-footer"><div class="container site-footer__inner"><p style="margin:0">© 2026 chuan. All rights reserved.</p><div class="site-footer__links"><a href="https://github.com/me-chuan" target="_blank" rel="me noopener noreferrer">GitHub</a><a href="mailto:lemonchuan@sjtu.edu.cn">Email</a><a href="/rss.xml">RSS</a><a href="/sitemap-index.xml">Sitemap</a></div></div></footer><script type="module">var e=()=>{let e=document.querySelector(`.reading-progress`);if(!e)return;let t=document.querySelector(`.prose`)??document.body,n=t.getBoundingClientRect().top+window.scrollY,r=t.offsetHeight,i=window.scrollY-n,a=r>0?i/(r-window.innerHeight*.4):0;e.style.width=Math.max(0,Math.min(100,a*100))+`%`};e(),document.addEventListener(`scroll`,e,{passive:!0});var t=()=>{document.querySelectorAll(`img.post-list-cover[loading="lazy"]`).forEach(e=>{e.complete||(e.loading=`eager`)})},n=()=>{e(),t()};n(),document.addEventListener(`astro:page-load`,n);</script></body></html>

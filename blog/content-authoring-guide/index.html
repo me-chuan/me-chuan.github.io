@@ -1,0 +1,128 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v7.4.0"><title>写文章与加项目：这个站点的内容操作手册 · chuan</title><meta name="description" content="给自己看的备忘。新增一篇博客、新增一个项目、改个人信息，各自要动哪些文件。"><link rel="canonical" href="https://me-chuan.github.io/blog/content-authoring-guide/"><meta property="og:type" content="article"><meta property="og:site_name" content="chuan"><meta property="og:title" content="写文章与加项目：这个站点的内容操作手册 · chuan"><meta property="og:description" content="给自己看的备忘。新增一篇博客、新增一个项目、改个人信息，各自要动哪些文件。"><meta property="og:url" content="https://me-chuan.github.io/blog/content-authoring-guide/"><meta property="og:image" content="https://me-chuan.github.io/_astro/content-authoring-guide.DEBmpMEn.png"><meta property="og:locale" content="zh-CN"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="写文章与加项目：这个站点的内容操作手册 · chuan"><meta name="twitter:description" content="给自己看的备忘。新增一篇博客、新增一个项目、改个人信息，各自要动哪些文件。"><meta name="twitter:image" content="https://me-chuan.github.io/_astro/content-authoring-guide.DEBmpMEn.png"><meta property="article:published_time" content="2026-10-19T00:00:00.000Z"><meta property="article:tag" content="使用说明"><link rel="alternate" type="application/rss+xml" title="chuan · RSS" href="/rss.xml"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="sitemap" href="/sitemap-index.xml"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"写文章与加项目：这个站点的内容操作手册 · chuan","description":"给自己看的备忘。新增一篇博客、新增一个项目、改个人信息，各自要动哪些文件。","datePublished":"2026-10-19T00:00:00.000Z","author":{"@type":"Person","name":"chuan","url":"https://me-chuan.github.io"},"publisher":{"@type":"Person","name":"chuan","url":"https://me-chuan.github.io"},"mainEntityOfPage":"https://me-chuan.github.io/blog/content-authoring-guide/","image":"https://me-chuan.github.io/_astro/content-authoring-guide.DEBmpMEn.png","keywords":"使用说明"}</script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.BDCjmQ8c.js"></script><script>
+      // 在首次绘制前设定主题，避免暗色模式下闪白
+      (function () {
+        function syncTheme() {
+          try {
+            var stored = localStorage.getItem('theme');
+            var theme =
+              stored === 'light' || stored === 'dark'
+                ? stored
+                : window.matchMedia('(prefers-color-scheme: dark)').matches
+                  ? 'dark'
+                  : 'light';
+            document.documentElement.dataset.theme = theme;
+            document.documentElement.dataset.themePref = stored || 'auto';
+          } catch (e) {
+            document.documentElement.dataset.theme = 'light';
+          }
+        }
+
+        syncTheme();
+
+        // <ClientRouter /> 换页时会把 <html> 的属性按新文档覆盖回来，
+        // 用户手动切过的主题会被打回默认值，所以每次交换完再贴一次。
+        // is:inline 脚本在换页时会重复执行，用全局标记防止监听器叠加。
+        var FLAG = '__themeSyncBound';
+        if (!(FLAG in window)) {
+          window[FLAG] = true;
+          document.addEventListener('astro:after-swap', syncTheme);
+        }
+      })();
+    </script><link rel="stylesheet" href="/_astro/BaseLayout.mUVeUsvE.css"></head><body><a class="skip-link" href="#main">跳到主内容</a><div class="reading-progress" aria-hidden="true"></div><header class="site-header"><div class="container site-header__inner"><a class="site-brand" href="/"><span class="site-brand__mark" aria-hidden="true"></span><span>chuan</span></a><nav class="site-nav" aria-label="主导航"><a href="/">首页</a><a href="/blog/" aria-current="page">博客</a><a href="/projects/">项目</a><a href="/about/">关于</a><button class="theme-toggle" type="button" id="theme-toggle" aria-label="切换主题" title="切换主题"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg></button></nav></div></header><script type="module">var e=`theme`,t=()=>window.matchMedia(`(prefers-color-scheme: dark)`).matches?`dark`:`light`,n=()=>{let t=localStorage.getItem(e);return t===`light`||t===`dark`?t:null},r=e=>{document.documentElement.dataset.theme=e,document.documentElement.dataset.themePref=n()??`auto`},i=`__themeToggleBound`;i in window||(window[i]=!0,document.addEventListener(`click`,i=>{if(!i.target?.closest?.(`#theme-toggle`))return;let a=n()??`auto`,o=a===`auto`?t()===`dark`?`light`:`dark`:a===`dark`?`auto`:`dark`;o===`auto`?localStorage.removeItem(e):localStorage.setItem(e,o),r(o===`auto`?t():o)}),window.matchMedia(`(prefers-color-scheme: dark)`).addEventListener(`change`,()=>{n()||r(t())}));</script><main id="main"><div class="container"><article class="prose"><img class="post-cover post-cover--hero" src="/_astro/content-authoring-guide.DEBmpMEn.png" alt="写文章与加项目：这个站点的内容操作手册 — 封面" width="1200" height="630" decoding="async"><header class="post-header"><p class="post-kicker"><span class="post-kicker__number">N° 01</span><span>使用说明</span><span>2026/10/19</span></p><h1>写文章与加项目：这个站点的内容操作手册</h1><div class="post-header__meta"></div></header><p>这是一篇偏向“使用说明”的文章，也是这个站点内容的活文档。</p>
+<h2 id="加一篇博客">加一篇博客</h2>
+<p>在 <code>src/content/blog/</code> 下新建 <code>.md</code> 文件，文件名就是 URL（<code>foo-bar.md</code> → <code>/blog/foo-bar/</code>）。</p>
+<p>frontmatter 必填字段：</p>
+<pre class="astro-code astro-code-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="yaml"><code><span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">---</span></span>
+<span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">title</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">文章标题</span></span>
+<span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">description</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">一句话摘要，会用在列表页和 SEO 描述里</span></span>
+<span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">pubDate</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">2026-10-19</span></span>
+<span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">tags</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: [</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">标签1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">标签2</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">]</span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">---</span></span></code></pre>
+<p>可选字段：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>updatedDate</code></td>
+<td>有则显示“更新于”</td>
+</tr>
+<tr>
+<td><code>draft</code></td>
+<td><code>true</code> 时线上不显示（本地开发可见）</td>
+</tr>
+</tbody>
+</table>
+<p>schema 会在构建期校验，字段写错或缺失会直接让 CI 失败——比上线后才发现要好。</p>
+<h2 id="加一个项目">加一个项目</h2>
+<p>在 <code>src/content/projects/</code> 下新建 <code>.md</code> 文件：</p>
+<pre class="astro-code astro-code-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="yaml"><code><span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">---</span></span>
+<span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">title</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">项目名</span></span>
+<span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">description</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">一句话说明这个项目是干什么的</span></span>
+<span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">startDate</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">2024-03-01</span></span>
+<span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">repo</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">https://github.com/me-chuan/some-repo</span></span>
+<span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">demo</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">https://example.com</span></span>
+<span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">tech</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: [</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">TypeScript</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">Astro</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">]</span></span>
+<span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">featured</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>
+<span class="line"><span style="--shiki-light:#22863A;--shiki-dark:#85E89D">order</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">1</span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">---</span></span></code></pre>
+<p><code>featured: true</code> 的项目会优先出现在首页；<code>order</code> 越小越靠前。正文（Markdown 部分）可选，会渲染在项目详情页。</p>
+<h2 id="改个人信息">改个人信息</h2>
+<p>所有站点级信息集中在 <code>src/data/site.config.ts</code> 一个文件里：</p>
+<ul>
+<li>站名、简介、作者名、头像路径</li>
+<li>社交链接（填了才显示，<code>email</code> 留空就不渲染联系入口）</li>
+<li>顶部导航</li>
+<li>社交卡片图片路径 <code>public/og-image.png</code></li>
+</ul>
+<p>改完 <code>pnpm dev</code> 立刻生效。</p>
+<h2 id="换域名">换域名</h2>
+<p>现在用的是 <code>me-chuan.github.io</code>。换成自有域名需要动三处：</p>
+<ol>
+<li><code>astro.config.mjs</code> 里的 <code>site</code></li>
+<li><code>src/data/site.config.ts</code> 里的 <code>url</code></li>
+<li><code>public/CNAME</code>（新建文件，写域名，一行一个）</li>
+</ol>
+<p>然后在域名服务商加 DNS 记录：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>名称</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td><code>@</code></td>
+<td><code>185.199.108.153</code> <code>185.199.109.153</code> <code>185.199.110.153</code> <code>185.199.111.153</code></td>
+</tr>
+<tr>
+<td>AAAA</td>
+<td><code>@</code></td>
+<td><code>2606:50c0:8000::153</code> <code>2606:50c0:8001::153</code> <code>2606:50c0:8002::153</code> <code>2606:50c0:8003::153</code></td>
+</tr>
+<tr>
+<td>CNAME</td>
+<td><code>www</code></td>
+<td><code>me-chuan.github.io</code></td>
+</tr>
+</tbody>
+</table>
+<p>最后到仓库 Settings → Pages 填 Custom domain，勾上 Enforce HTTPS。等证书签发（几分钟到 24 小时）就完成了。</p>
+<blockquote>
+<p>⚠️ 不要用通配符 DNS 记录（<code>*.example.com</code>），官方明确警告这会带来域名接管风险。</p>
+</blockquote>
+<h2 id="本地开发">本地开发</h2>
+<pre class="astro-code astro-code-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="bash"><code><span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">pnpm</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> dev</span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D">        # 开发服务器，热更新</span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">pnpm</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> build</span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D">      # 构建到 dist/，和 CI 产物一致</span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">pnpm</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> preview</span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D">    # 本地预览构建结果</span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">pnpm</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> check</span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D">      # TypeScript + 内容 schema 检查</span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">pnpm</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> covers</span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D">     # 重新生成全部文章封面到 src/assets/covers/</span></span></code></pre>
+<p>推送到 <code>main</code> 分支会自动触发构建和部署。</p>
+</article><nav class="post-nav" aria-label="文章导航"><a href="/blog/github-pages-ci-cd/">← GitHub Pages 自动部署流水线：三段式与那些容易踩的坑</a></nav></div></main><footer class="site-footer"><div class="container site-footer__inner"><p style="margin:0">© 2026 chuan. All rights reserved.</p><div class="site-footer__links"><a href="https://github.com/me-chuan" target="_blank" rel="me noopener noreferrer">GitHub</a><a href="mailto:lemonchuan@sjtu.edu.cn">Email</a><a href="/rss.xml">RSS</a><a href="/sitemap-index.xml">Sitemap</a></div></div></footer><script type="module">var e=()=>{let e=document.querySelector(`.reading-progress`);if(!e)return;let t=document.querySelector(`.prose`)??document.body,n=t.getBoundingClientRect().top+window.scrollY,r=t.offsetHeight,i=window.scrollY-n,a=r>0?i/(r-window.innerHeight*.4):0;e.style.width=Math.max(0,Math.min(100,a*100))+`%`};e(),document.addEventListener(`scroll`,e,{passive:!0});var t=()=>{document.querySelectorAll(`img.post-list-cover[loading="lazy"]`).forEach(e=>{e.complete||(e.loading=`eager`)})},n=()=>{e(),t()};n(),document.addEventListener(`astro:page-load`,n);</script></body></html>
